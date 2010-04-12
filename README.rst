@@ -5,6 +5,21 @@ Haystack
 :author: Daniel Lindsley
 :date: 2010/03/20
 
+Differences from toastdriven
+============================
+
+This version allows you to use dynamic fields, so that you don't have to 
+keep changing the schema.xml in your Solr instance as your app evolves.
+
+To use, set HAYSTACK_SOLR_DYNAMIC=True in settings.py.
+
+fizx / TODO
+============================
+- testing of dynamic fields.
+
+Overview
+============================
+
 Haystack provides modular search for Django. It features a unified, familiar
 API that allows you to plug in different search backends (such as Solr_,
 Whoosh_, Xapian_, etc.) without having to modify your code.
