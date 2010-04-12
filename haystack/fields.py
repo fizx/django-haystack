@@ -2,6 +2,7 @@ import re
 from django.utils import datetime_safe
 from django.template import loader, Context
 from haystack.exceptions import SearchFieldError
+from django.conf import settings
 
 
 class NOT_PROVIDED:
@@ -36,9 +37,29 @@ class SearchField(object):
     def set_instance_name(self, instance_name):
         self.instance_name = instance_name
         
+        if hasattr(settings, 'HAYSTACK_SOLR_DYNAMIC') and \
+           getattr(settings, 'HAYSTACK_SOLR_DYNAMIC') and \
+           self.index_fieldname is None and \
+           self.instance_name is not None:
+            extension = "_t"
+            classname = self.__class__.__name__
+            if classname == "CharField":
+                extension = "_t"
+            elif classname == "IntegerField":
+                extension = "_l"
+            elif classname == "FloatField":
+                extension = "_d"
+            elif classname == "BooleanField":
+                extension = "_b"
+            elif classname == "DateField":
+                extension = "_dt"
+            elif classname == "DateTimeField":
+                extension = "_dt"
+            self.index_fieldname = self.instance_name + extension
+            
         if self.index_fieldname is None:
             self.index_fieldname = self.instance_name
-    
+        
     def has_default(self):
         """Returns a boolean of whether this field has a default value."""
         return self._default is not NOT_PROVIDED
